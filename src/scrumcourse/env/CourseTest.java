@@ -1,6 +1,7 @@
 package scrumcourse.env;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -15,8 +16,12 @@ public class CourseTest {
 	// Needs env.college environment property with college name string
 	// This test needs to be run with -Denv.college=Standford
 	@Test public void collegeName() throws Exception {
-		Course course = new Course("maths");
+		EnvPropertiesMockup myMockup = new EnvPropertiesMockup("Standford");
+		Course course = new Course("maths",  myMockup);
 		assertEquals("Standford", course.getCollege());
+		myMockup.setCollege("patata");
+		assertEquals("patata", course.getCollege());
+		assertFalse("Standford".equals(course.getCollege()));
 	}
 
 	// A Short course has length less than 2 hours
@@ -62,6 +67,22 @@ public class CourseTest {
 				return (System.nanoTime() + this.extraDuration);
 			}
 		}
+	}
+	
+	private static class EnvPropertiesMockup implements EnvProperties{
+		private String college = "";
 		
+		EnvPropertiesMockup(String cllg){
+			this.college = cllg;
+		}
+		
+		public void setCollege(String college){
+			this.college = college;
+		}
+
+		@Override
+		public String getProperty(String property) {
+			return this.college;
+		}
 	}
 }

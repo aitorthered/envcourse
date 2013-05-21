@@ -13,14 +13,22 @@ public class Course {
 	private long durationSeconds;
 	
 	private Timer myTimer;
+	private EnvProperties myProperties;
 
-	public Course(String name, Timer myNewTimer) {
+	public Course(String name, Timer myNewTimer, EnvProperties myProperties) {
 		this.name = name;
 		this.myTimer = myNewTimer;
+		this.myProperties = myProperties;
+	}
+	public Course(String name, Timer myNewTimer) {
+		this(name, myNewTimer, new EnvPropertiesImpl());
+	}
+	public Course(String name, EnvProperties myProperties) {
+		this(name, new TimerImpl(), myProperties );
 	}
 
 	public Course(String name) {
-		this(name, new TimerImpl() );
+		this(name, new TimerImpl(), new EnvPropertiesImpl());
 	}
 
 	public String getName() {
@@ -28,7 +36,7 @@ public class Course {
 	}
 
 	public String getCollege() {
-		return System.getProperty("env.college");
+		return myProperties.getProperty("env.college");
 	}
 
 	public void start() {
@@ -61,4 +69,13 @@ public class Course {
 		
 	}
 
+	private static class EnvPropertiesImpl implements EnvProperties{
+
+		@Override
+		public String getProperty(String property) {
+			return System.getProperty(property);
+		}
+
+		
+	}
 }
